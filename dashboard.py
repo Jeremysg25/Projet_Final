@@ -2,29 +2,29 @@ import dash
 from dash import dcc, html
 import plotly.graph_objs as go
 import pandas as pd
-import time
 
-# Charger les données
-def load_data():
+# Charger l'historique des données
+def load_history():
     try:
-        with open("data.txt", "r", encoding="utf-8") as file:
-            lines = file.readlines()
-            data = {line.split(":")[0]: line.split(":")[1].strip() for line in lines}
-        return data
-    except:
-        return {}
+        df = pd.read_csv("history.csv", names=["time", "dette_publique", "dette_habitant", "deficit_secu"])
+        df["time"] = pd.to_datetime(df["time"])
+        return df
+    except Exception as e:
+        print(f"Erreur lors du chargement de l'historique: {e}")
+        return pd.DataFrame(columns=["time", "dette_publique", "dette_habitant", "deficit_secu"])
 
-# Initialiser l'application Dash
+# Initialiser Dash
 app = dash.Dash(__name__)
 
-# Layout du Dashboard
 app.layout = html.Div([
     html.H1("📊 Dashboard des Données Économiques"),
     
     html.Div(id="live-data"),
     
+    # Graphique des séries temporelles
     dcc.Graph(id="time-series"),
     
+    # Mise à jour auto toutes les 5 minutes
     dcc.Interval(
         id="interval-component",
         interval=5*60*1000,  # 5 minutes
@@ -32,28 +32,23 @@ app.layout = html.Div([
     )
 ])
 
-# Callback pour mettre à jour les données affichées
-@app.callback(
-    dash.dependencies.Output("live-data", "children"),
-    dash.dependencies.Input("interval-component", "n_intervals")
-)
-def update_data(n):
-    data = load_data()
-    return html.Ul([html.Li(f"{key}: {value}") for key, value in data.items()])
-
-# Callback pour mettre à jour le graphique
+# Callback pour actualiser le graphique
 @app.callback(
     dash.dependencies.Output("time-series", "figure"),
     dash.dependencies.Input("interval-component", "n_intervals")
 )
 def update_graph(n):
-    try:
-        df = pd.read_csv("history.csv")  # Fichier où l'on stocke l'historique
-        figure = go.Figure()
-        figure.add_trace(go.Scatter(x=df["time"], y=df["dette_publique"], mode="lines", name="Dette publique"))
-        return figure
-    except:
-        return go.Figure()
+    df = load_history()
+    figure = go.Figure()
+    
+    if not df.empty:
+        figure.add_trace(go.Scatter(x=df["time"], y=df["dette_publique"], mode="lines+markers", name="Dette publique"))
+        figure.add_trace(go.Scatter(x=df["time"], y=df["dette_habitant"], mode="lines+markers", name="Dette par habitant"))
+        figure.add_trace(go.Scatter(x=df["time"], y=df["deficit_secu"], mode="lines+markers", name="Déficit Sécu"))
+
+    figure.update_layout(title="Évolution des Données Économiques", xaxis_title="Temps", yaxis_title="Valeurs (€)")
+    
+    return figure
 
 if __name__ == '__main__':
     print("🚀 Démarrage du serveur Dash...")
