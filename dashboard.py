@@ -56,4 +56,5 @@ def update_graph(n):
         return go.Figure()
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    print("🚀 Démarrage du serveur Dash...")
+    app.run(debug=True)
