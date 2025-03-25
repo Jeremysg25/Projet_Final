@@ -5,8 +5,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-CHROMEDRIVER_PATH = "C:/Users/jerem/OneDrive/Documents/ESILV/A4 bis/S8/PGL/Projet_Final/chromedriver-win64/chromedriver-win64/chromedriver.exe"
-#CHROMEDRIVER_PATH = ""
+#CHROMEDRIVER_PATH = "C:/Users/jerem/OneDrive/Documents/ESILV/A4 bis/S8/PGL/Projet_Final/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+CHROMEDRIVER_PATH = "C:/Users/jules/OneDrive/Bureau/Esilv/A4 bis/S2/PGL/Projet/Projet_Final/chromedriver-win64/chromedriver-win64/chromedriver.exe"
 
 options = webdriver.ChromeOptions()
 options.add_argument("--headless") 
