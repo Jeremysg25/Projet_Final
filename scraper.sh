@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Extraction et nettoyage des valeurs
 clean_value() {
     echo "$1" | tr -d '\r\n €' | tr ',' '.' | xargs
 }
@@ -9,20 +8,16 @@ DETTE_PUBLIQUE=$(clean_value "$(sed -n 's/.*id="custom-counter-value-dette"[^>]*
 DETTE_HABITANT=$(clean_value "$(sed -n 's/.*id="custom-counter-value-habitant"[^>]*>\([^<]*\).*/\1/p' source.html)")
 DEFICIT_SECU=$(clean_value "$(sed -n 's/.*id="custom-counter-value-dettesecu"[^>]*>\([^<]*\).*/\1/p' source.html)")
 
-# Dette / PIB
 DETTE_PIB_INT=$(grep -A1 'data-to-value="115"' source.html | sed -n 's/.*data-to-value="\([^"]*\)".*/\1/p')
 DETTE_PIB_SUFFIX=$(grep -A1 'data-to-value="115"' source.html | grep 'suffix' | sed -n 's/.*>\([^<]*\).*/\1/p')
 DETTE_PIB=$(clean_value "$DETTE_PIB_INT$DETTE_PIB_SUFFIX")
 
-# Déficit budget
 DEFICIT_BUDGET=$(clean_value "$(sed -n 's/.*id="custom-counter-value-deficitmobile"[^>]*>\([^<]*\).*/\1/p' source.html)")
 
-# Déficit 2024
 DEFICIT_2024_INT=$(grep -A1 'data-to-value="156"' source.html | sed -n 's/.*data-to-value="\([^"]*\)".*/\1/p')
 DEFICIT_2024_SUFFIX=$(grep -A1 'data-to-value="156"' source.html | grep 'suffix' | sed -n 's/.*>\([^<]*\).*/\1/p')
 DEFICIT_2024=$(clean_value "$DEFICIT_2024_INT$DEFICIT_2024_SUFFIX")
 
-# Valeurs par défaut si vide
 DETTE_PUBLIQUE=${DETTE_PUBLIQUE:-"NA"}
 DETTE_HABITANT=${DETTE_HABITANT:-"NA"}
 DEFICIT_SECU=${DEFICIT_SECU:-"NA"}
@@ -30,13 +25,10 @@ DETTE_PIB=${DETTE_PIB:-"NA"}
 DEFICIT_BUDGET=${DEFICIT_BUDGET:-"NA"}
 DEFICIT_2024=${DEFICIT_2024:-"NA"}
 
-# Timestamp
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
-# Écriture dans le fichier CSV
 echo "$TIMESTAMP,$DETTE_PUBLIQUE,$DETTE_HABITANT,$DEFICIT_SECU,$DETTE_PIB,$DEFICIT_BUDGET,$DEFICIT_2024" >> history.csv
 
-# Affichage dans data.txt (pour info)
 {
   echo "Dette publique : $DETTE_PUBLIQUE €"
   echo "Dette par habitant : $DETTE_HABITANT €"
@@ -46,4 +38,4 @@ echo "$TIMESTAMP,$DETTE_PUBLIQUE,$DETTE_HABITANT,$DEFICIT_SECU,$DETTE_PIB,$DEFIC
   echo "Déficit budgétaire prévu en 2024 : $DEFICIT_2024"
 } > data.txt
 
-echo "Données mises à jour avec succès ✅"
+echo "Données mises à jour avec succès"

@@ -1,17 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
 
-#CHROMEDRIVER_PATH = "C:/Users/jerem/OneDrive/Documents/ESILV/A4 bis/S8/PGL/Projet_Final/chromedriver-win64/chromedriver-win64/chromedriver.exe"
-CHROMEDRIVER_PATH = "C:/Users/jules/OneDrive/Bureau/Esilv/A4 bis/S2/PGL/Projet/Projet_Final/chromedriver-win64/chromedriver-win64/chromedriver.exe"
+options = Options()
+options.binary_location = "/usr/bin/google-chrome"
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
+options.add_argument("--disable-dev-shm-usage")
 
-options = webdriver.ChromeOptions()
-options.add_argument("--headless") 
-service = Service(CHROMEDRIVER_PATH)
+service = Service("/mnt/c/Users/jerem/OneDrive/Documents/ESILV/A4 bis/S8/PGL/Projet_Final/chromedriver-linux64/chromedriver-linux64/chromedriver")
 driver = webdriver.Chrome(service=service, options=options)
+
 
 URL = "https://horloge-de-la-dette-publique.com/"
 driver.get(URL)
@@ -32,4 +35,5 @@ with open("source.html", "w", encoding="utf-8") as file:
 
 print("Code source enregistré dans 'source.html'.")
 
-driver.quit()
+with open("debug_headless.html", "w", encoding="utf-8") as f:
+    f.write(driver.page_source)
