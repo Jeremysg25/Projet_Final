@@ -12,7 +12,7 @@ options.add_argument("--headless")
 options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 
-service = Service("/mnt/c/Users/jerem/OneDrive/Documents/ESILV/A4 bis/S8/PGL/Projet_Final/chromedriver-linux64/chromedriver-linux64/chromedriver")
+service = Service("/home/jeremysegui2003/scraper/Projet_Final/chromedriver-linux64/chromedriver-linux64/chromedriver")
 driver = webdriver.Chrome(service=service, options=options)
 
 
