@@ -60,7 +60,6 @@ def update_stats(n):
             stat_card("Dette par habitant", latest['dette_habitant']),
             stat_card("Déficit sécurité sociale", latest['deficit_secu']),
             stat_card("Dette publique / PIB", latest['dette_pib']),
-            stat_card("Déficit budgétaire prévu en 2024", latest['deficit_2024']),
         ], className="gy-3"),
         html.P(f"Dernière mise à jour : {latest['timestamp']}", className="text-muted mt-3")
     ]
