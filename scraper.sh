@@ -6,30 +6,27 @@ clean_value() {
 
 DETTE_PUBLIQUE=$(clean_value "$(sed -n 's/.*id="custom-counter-value-dette"[^>]*>\([^<]*\).*/\1/p' source.html)")
 DETTE_HABITANT=$(clean_value "$(sed -n 's/.*id="custom-counter-value-habitant"[^>]*>\([^<]*\).*/\1/p' source.html)")
-DEFICIT_SECU=$(clean_value "$(sed -n 's/.*id="custom-counter-value-dettesecu"[^>]*>\([^<]*\).*/\1/p' source.html)")
-
-DETTE_PIB_INT=$(grep -A1 'data-to-value="115"' source.html | sed -n 's/.*data-to-value="\([^"]*\)".*/\1/p')
-DETTE_PIB_SUFFIX=$(grep -A1 'data-to-value="115"' source.html | grep 'suffix' | sed -n 's/.*>\([^<]*\).*/\1/p')
-DETTE_PIB=$(clean_value "$DETTE_PIB_INT$DETTE_PIB_SUFFIX")
-
 DEFICIT_BUDGET=$(clean_value "$(sed -n 's/.*id="custom-counter-value-deficitmobile"[^>]*>\([^<]*\).*/\1/p' source.html)")
 
 DETTE_PUBLIQUE=${DETTE_PUBLIQUE:-"NA"}
 DETTE_HABITANT=${DETTE_HABITANT:-"NA"}
-DEFICIT_SECU=${DEFICIT_SECU:-"NA"}
-DETTE_PIB=${DETTE_PIB:-"NA"}
 DEFICIT_BUDGET=${DEFICIT_BUDGET:-"NA"}
 
 TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
-echo "$TIMESTAMP,$DETTE_PUBLIQUE,$DETTE_HABITANT,$DEFICIT_SECU,$DETTE_PIB,$DEFICIT_BUDGET" >> history.csv
+echo "$TIMESTAMP,$DETTE_PUBLIQUE,$DETTE_HABITANT,$DEFICIT_BUDGET" >> history.csv
+
+MAX_LINES=5
+line_count=$(wc -l < history.csv)
+
+if [ "$line_count" -gt "$MAX_LINES" ]; then
+    head -n 1 history.csv > temp.csv
+    tail -n +3 history.csv >> temp.csv
+    mv temp.csv history.csv
+fi
 
 {
   echo "Dette publique : $DETTE_PUBLIQUE €"
   echo "Dette par habitant : $DETTE_HABITANT €"
-  echo "Déficit sécurité sociale : $DEFICIT_SECU €"
-  echo "Dette publique / PIB : $DETTE_PIB %"
   echo "Déficit du budget de l'État : $DEFICIT_BUDGET €"
 } > data.txt
-
-echo "Données mises à jour avec succès"

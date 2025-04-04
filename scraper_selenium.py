@@ -27,13 +27,11 @@ try:
     wait.until(EC.visibility_of_element_located((By.ID, "custom-counter-value-dettesecu")))
     time.sleep(2)
 except:
-    print("Les valeurs dynamiques ne se sont pas chargées correctement.")
+    print("")
 
 page_source = driver.page_source
 with open("source.html", "w", encoding="utf-8") as file:
     file.write(page_source)
-
-print("Code source enregistré dans 'source.html'.")
 
 with open("debug_headless.html", "w", encoding="utf-8") as f:
     f.write(driver.page_source)
